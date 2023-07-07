@@ -7,17 +7,27 @@ if __name__ == '__main__':
     im = cv.GaussianBlur(im0, (7,7), 3)  # add some blur
     im = add_salt_and_pepper_noise(im)  # add noise
     h,w = im.shape[:2]
+    cv.imshow('blurred n noisy', im)
+
+    # preprocessing
+    im = cv.medianBlur(im, ksize=7)
+    cv.imshow('denoised', im)
+    im = deblur_out_of_focus(im, ksize=7, sigma=3)
+    cv.imshow('deblurred', im)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
 
     # upscaling
-    imgs, imgs_resized = [im, im], [im]     # store resized upscaled image
+    im_tmp = np.copy(im)
+    imgs_resized = [im]     # store resized upscaled image
     for i in range(5):
         print(i)
-        im_tmp, im_resized_tmp = pyramid_upscaling(imgs[-1], (w,h))
+        im_tmp, im_resized_tmp = pyramid_upscaling(im_tmp, (w,h))
         
         display_im(im_tmp, f'imfsize{i}', isShow=0, isSave=1)
         display_im(im_resized_tmp, f'imresized{i}', isShow=0, isSave=1)
         
-        imgs[1] = im_tmp; imgs_resized.append(im_resized_tmp)
+        imgs_resized.append(im_resized_tmp)
 
     # evaluation
     for i, img in enumerate(imgs_resized):

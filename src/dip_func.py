@@ -3,15 +3,23 @@ import cv2 as cv
 import numpy as np
 
 
-def add_salt_and_pepper_noise(image, salt_prob:float=0.01, pepper_prob:float=0.01):
-    noisy_image = np.copy(image)
-    h, w = noisy_image.shape[:2]
+def add_salt_and_pepper_noise(im, salt_prob:float=0.01, pepper_prob:float=0.01):
+    im_noisy = np.copy(im)
+    h, w = im_noisy.shape[:2]
     # generate random noise mask
     salt_mask = np.random.random(size=(h, w)) < salt_prob
     pepper_mask = np.random.random(size=(h, w)) < pepper_prob
-    noisy_image[salt_mask] = 255    # salt noise
-    noisy_image[pepper_mask] = 0    # pepper noise
-    return noisy_image
+    im_noisy[salt_mask] = 255    # salt noise
+    im_noisy[pepper_mask] = 0    # pepper noise
+    return im_noisy
+
+
+def deblur_out_of_focus(im, ksize:int=7, sigma:int=2):
+    psf = cv.getGaussianKernel(ksize, sigma)
+    psf = np.outer(psf, psf)
+    psf /= np.sum(psf)
+    im_deblur = cv.filter2D(im, -1, psf)
+    return im_deblur
 
 
 def pyramid_upscaling(im, dsize:tuple=(None,None)):
