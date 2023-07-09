@@ -9,6 +9,13 @@ import matplotlib.pyplot as plt
 import os
 
 
+def get_fft_image(im):
+    im_fft = np.fft.fftshift( np.fft.fft2(im) )     # get the fft 2D, shift the zero into center
+    im_fft_amplitude = np.log10(1 + np.abs(im_fft))
+    im_fft_phase = np.angle(im_fft)
+    return im_fft_amplitude, im_fft_phase
+
+
 if __name__ == '__main__':
     im = cv.imread(os.getcwd() + './imgs/building.png', 0)
     
