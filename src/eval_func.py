@@ -38,7 +38,7 @@ def calculate_psnr(im1, im2):
 #     return vgg_loss
 
 
-def get_ssim(im1, im2, k1=0.01, k2=0.03, L=255):
+def calculate_ssim(im1, im2, k1=0.01, k2=0.03, L=255):
     """ compute Structural Similarity Index (SSIM) between two images.\\
         1 indicating a perfect match and -1 indicating a complete mismatch.\\
 
